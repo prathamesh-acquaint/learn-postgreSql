@@ -8,6 +8,12 @@ export const validate =
       schema.parse(req.body); // Validate body against schema
       next();
     } catch (error: any) {
-      res.status(400).json({ success: false, message: error.errors });
+      console.log(error)
+      // Map Zod errors to return only the custom message
+      const errors = error.errors.map((err: any) => ({
+        path: err.path.join('.'),
+        message: err.message, // Your custom message
+      }));
+      res.status(400).json({ success: false, errors });
     }
   };

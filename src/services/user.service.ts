@@ -9,3 +9,7 @@ export const getAllUsers = async () => {
     include: { company: true, instructor: true, jobSeeker: true },
   });
 };
+
+export const findUserByEmail = async (email: string) => {
+  return await prisma.user.findUnique({ where: { email } });
+};
