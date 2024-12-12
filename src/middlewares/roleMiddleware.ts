@@ -3,7 +3,7 @@ import { verifyToken } from '../utils/authUtils';
 
 export const roleMiddleWare = (roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const token = req.header('Authorization')?.replace('Bearer', '');
+    const token = req.header('Authorization')?.replace('Bearer', '').trim();;
     if (!token) {
       res.status(401).json({ message: 'Authorization required.' });
     }
@@ -12,13 +12,13 @@ export const roleMiddleWare = (roles: string[]) => {
 
       // Check if user role is in the allowed roles list
       if (!roles.includes(verifiedToken.role)) {
-        return res.status(403).json({ message: 'Forbidden' });
+        res.status(403).json({ message: 'Forbidden' });
       }
 
-      req.userId = verifiedToken.userId;
+      // req.userId = verifiedToken.userId;
       next();
     } catch (error) {
-      next({ status: 400, nessage: 'Invalid or expired token' });
+      next({ status: 400, message: 'Invalid or expired token' });
     }
   };
 };

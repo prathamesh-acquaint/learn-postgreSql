@@ -44,19 +44,23 @@ model JobSeeker {
   isDeleted    Boolean  @default(false)
   userId       Int      @unique
   user         User     @relation(fields: [userId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model Instructor {
-  id            Int     @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   expertise     String
   preCourseLink String
-  isDeleted     Boolean @default(false)
-  userId        Int     @unique
-  user          User    @relation(fields: [userId], references: [id])
+  isDeleted     Boolean  @default(false)
+  userId        Int      @unique
+  user          User     @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Company {
-  id                Int     @id @default(autoincrement())
+  id                Int      @id @default(autoincrement())
   companyType       String
   companyName       String
   companyWebsiteURL String?
@@ -64,7 +68,28 @@ model Company {
   contactNumber     String
   contactEmail      String
   companyDesc       String?
-  isDeleted         Boolean @default(false)
-  userId            Int     @unique
-  user              User    @relation(fields: [userId], references: [id])
+  isDeleted         Boolean  @default(false)
+  userId            Int      @unique
+  user              User     @relation(fields: [userId], references: [id])
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Industry {
+  id        Int       @id @default(autoincrement())
+  name      String
+  isDeleted Boolean   @default(false)
+  Interest  Interest?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Interest {
+  id         Int      @id @default(autoincrement())
+  name       String
+  isDeleted  Boolean  @default(false)
+  industryId Int      @unique
+  insustry   Industry @relation(fields: [industryId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
