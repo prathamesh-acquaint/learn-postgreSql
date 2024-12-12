@@ -25,10 +25,13 @@ export const registerHandler = async (
     const hashedPassword = await bcrypt.hash(validateSchema.password, 10);
 
     // Create the User.
-    const newUser = await createUser({
-      ...validateSchema,
-      password: hashedPassword,
-    });
+    const newUser = await createUser(
+      {
+        ...validateSchema,
+        password: hashedPassword,
+      },
+      validateSchema.role,
+    );
 
     res.status(200).json({
       success: true,

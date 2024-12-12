@@ -11,5 +11,5 @@ export const generateToken = (userId: number, role: string) => {
 
 // Verify the JWT token
 export const verifyToken = (token: string) => {
-  return jwt.verify(token, JWT_SECRET) as { userId: number };
+  return jwt.verify(token, JWT_SECRET) as { userId: number; role: string };
 };
