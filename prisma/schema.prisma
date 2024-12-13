@@ -76,20 +76,20 @@ model Company {
 }
 
 model Industry {
-  id        Int       @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
-  isDeleted Boolean   @default(false)
-  Interest  Interest?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  isDeleted Boolean    @default(false)
+  interests Interest[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Interest {
   id         Int      @id @default(autoincrement())
   name       String
   isDeleted  Boolean  @default(false)
-  industryId Int      @unique
-  insustry   Industry @relation(fields: [industryId], references: [id])
+  industryId Int
+  insustry   Industry @relation(fields: [industryId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 }

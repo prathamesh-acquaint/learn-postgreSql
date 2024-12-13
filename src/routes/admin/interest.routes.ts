@@ -6,10 +6,13 @@ import { interestSchema } from '../../validators/admin/interest.schema';
 import {
   createInterestHandler,
   deleteInterestHandler,
+  getAllInterestHandler,
   updateInterestHandler,
 } from '../../controllers/admin/interest.controller';
 
 const interestRouter = express.Router();
+
+interestRouter.get('/', roleMiddleWare([Role.ADMIN]), getAllInterestHandler);
 
 interestRouter.post(
   '/',

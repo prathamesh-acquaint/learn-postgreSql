@@ -8,7 +8,50 @@ export const createIndustry = async (data: Prisma.IndustryCreateInput) => {
   });
 };
 
+export const getAllIndustries = async (
+  filters: {
+    page?: number;
+    pageSize?: number;
+    search?: string;
+  },
+  includeInterest: boolean | undefined = false,
+) => {
+  console.log({ filters });
+  const { page = 1, pageSize = 10, search } = filters;
+
+  const skip = (page - 1) * pageSize;
+  const take = pageSize;
+
+  const where: any = {
+    name: search ? { contains: search, mode: 'insensitive' } : undefined,
+  };
+  const industries = await prisma.industry.findMany({
+    where,
+    skip,
+    take,
+    select: {
+      id: true,
+      name: true,
+      interests: includeInterest
+        ? { select: { id: true, industryId: true, name: true } }
+        : false,
+    },
+  });
+
+  const totalCount = await prisma.industry.count({ where });
+
+  return {
+    data: industries,
+    pagination: {
+      currentPage: page,
+      totalItems: totalCount,
+      totalPages: Math.ceil(totalCount / pageSize),
+    },
+  };
+};
+
 export const getIndustryById = async (id: number) => {
+  console.log('This is running !!');
   return await prisma.industry.findUnique({
     where: { id },
     select: { id: true, name: true },

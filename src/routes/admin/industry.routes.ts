@@ -5,10 +5,13 @@ import { industrySchema } from '../../validators/admin/industry.schema';
 import {
   createIndustryHandler,
   deleteIndustryHandler,
+  getAllIndustryHandler,
   updateIndustryHandler,
 } from '../../controllers/admin/industry.controller';
 
 const router = express.Router();
+
+router.get('/', roleMiddleWare(['ADMIN']), getAllIndustryHandler);
 
 router.post(
   '/',

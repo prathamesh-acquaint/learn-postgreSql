@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import {
   createIndustry,
   deleteIndustry,
+  getAllIndustries,
   getIndustryByName,
   updateIndustry,
 } from '../../services/admin/industry.service';
@@ -70,6 +71,32 @@ export const deleteIndustryHandler = async (
     res.status(201).json({
       message: 'Industry deleted successfully',
       industry: deletedIndustry,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getAllIndustryHandler = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const isInteresetInclude = req.query.withInterest;
+  const { page, pageSize, search } = req.query;
+  try {
+    const industries = await getAllIndustries(
+      {
+        page: Number(page ?? 1),
+        pageSize: Number(pageSize ?? 10),
+        search: search as string,
+      },
+      isInteresetInclude === 'true',
+    );
+    res.status(200).json({
+      message: 'Successfuly got all industries',
+      data: industries?.data,
+      pagination: industries?.pagination,
     });
   } catch (error) {
     next(error);
