@@ -35,17 +35,17 @@ model User {
 }
 
 model JobSeeker {
-  id           Int      @id @default(autoincrement())
-  skill        String[]
+  id           Int              @id @default(autoincrement())
   noticePeriod String
   ctcType      String
   expectedCTC  Float
   currentCTC   Float
-  isDeleted    Boolean  @default(false)
-  userId       Int      @unique
-  user         User     @relation(fields: [userId], references: [id])
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  isDeleted    Boolean          @default(false)
+  userId       Int              @unique
+  Skills       JobSeekerSkill[]
+  user         User             @relation(fields: [userId], references: [id])
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
 }
 
 model Instructor {
@@ -92,4 +92,25 @@ model Interest {
   insustry   Industry @relation(fields: [industryId], references: [id], onDelete: Cascade)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+}
+
+model Skill {
+  id         Int              @id @default(autoincrement())
+  name       String
+  JobSeekers JobSeekerSkill[]
+  isDeleted  Boolean          @default(false)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+}
+
+model JobSeekerSkill {
+  id          Int       @id @default(autoincrement())
+  jobSeekerId Int
+  skillId     Int
+  jobSeeker   JobSeeker @relation(fields: [jobSeekerId], references: [id])
+  skill       Skill     @relation(fields: [skillId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([jobSeekerId, skillId]) // Ensure a JobSeeker cannot have duplicate skills
 }
