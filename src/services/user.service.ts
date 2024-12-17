@@ -6,7 +6,10 @@ interface UserData
   extends Omit<Prisma.UserCreateInput, 'jobSeeker' | 'instructor' | 'company'> {
   company?: Prisma.CompanyCreateInput;
   instructor?: Prisma.InstructorCreateInput;
-  jobSeeker?: Prisma.JobSeekerCreateInput;
+  jobSeeker?: Prisma.JobSeekerCreateInput & {
+    industryId: number;
+    skills: number[];
+  };
 }
 
 export const createUser = async (data: UserData, role: Role) => {
@@ -25,11 +28,13 @@ export const createUser = async (data: UserData, role: Role) => {
   } else if (role === Role.INSTRUCTOR && data.instructor) {
     createData.instructor = { create: data.instructor };
   } else if (role === Role.JOB_SEEKER && data.jobSeeker) {
-    createData.jobSeeker = { create: data.jobSeeker };
+    createData.jobSeeker = {
+      create: { industryId: data.jobSeeker?.industryId },
+    };
   }
 
   // Create user and include role-specific relation
-  return await prisma.user.create({
+  const user = await prisma.user.create({
     data: createData,
     include: {
       company: role === Role.COMPANY,
@@ -37,6 +42,24 @@ export const createUser = async (data: UserData, role: Role) => {
       jobSeeker: role === Role.JOB_SEEKER,
     },
   });
+
+  if (
+    user &&
+    user?.jobSeeker &&
+    role === Role.JOB_SEEKER &&
+    data?.jobSeeker?.skills &&
+    data?.jobSeeker?.skills?.length > 0
+  ) {
+    const jobSeekerId: number = user?.jobSeeker?.id;
+    const SkillMapData = data?.jobSeeker?.skills?.map((item) => ({
+      jobSeekerId,
+      skillId: item,
+    }));
+    await prisma.jobSeekerSkill.createMany({ data: SkillMapData });
+    return user;
+  }
+
+  return user;
 };
 
 export const getAllUsers = async () => {

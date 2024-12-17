@@ -36,13 +36,15 @@ model User {
 
 model JobSeeker {
   id           Int              @id @default(autoincrement())
-  noticePeriod String
-  ctcType      String
-  expectedCTC  Float
-  currentCTC   Float
+  noticePeriod String?
+  ctcType      String?
+  expectedCTC  Float?
+  currentCTC   Float?
   isDeleted    Boolean          @default(false)
   userId       Int              @unique
+  industryId   Int
   Skills       JobSeekerSkill[]
+  Industry     Industry         @relation(fields: [industryId], references: [id])
   user         User             @relation(fields: [userId], references: [id])
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
@@ -76,12 +78,13 @@ model Company {
 }
 
 model Industry {
-  id        Int        @id @default(autoincrement())
-  name      String
-  isDeleted Boolean    @default(false)
-  interests Interest[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id         Int         @id @default(autoincrement())
+  name       String
+  isDeleted  Boolean     @default(false)
+  interests  Interest[]
+  jobSeekers JobSeeker[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
 }
 
 model Interest {

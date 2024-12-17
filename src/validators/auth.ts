@@ -41,7 +41,11 @@ export const jobseekerRegisterSchema = z.object({
     invalid_type_error: 'Invalid Role Provided.',
   }),
   jobSeeker: z.object({
-    skill: z.array(z.string(), { required_error: 'Skills are required' }),
+    skills: z.array(z.number(), { required_error: 'Skills are required' }),
+    industryId: z.number({
+      required_error: 'Industry Id is required.',
+      message: 'Industry Id is required.',
+    }),
   }),
 });
 
